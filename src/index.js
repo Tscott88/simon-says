@@ -217,7 +217,11 @@ function activatePad(color) {
  */
 
 function activatePads(sequence) {
-  // TODO: Write your code here.
+  let delay = 600;
+  sequence.forEach(color => {
+    setTimeout(() => activatePad(color), delay);
+    delay += 600;
+  })
 }
 
 /**
@@ -243,10 +247,16 @@ function activatePads(sequence) {
  * to the current round (roundCount) multiplied by 600ms which is the duration for each pad in the
  * sequence.
  */
- function playComputerTurn() {
-  // TODO: Write your code here.
+function playComputerTurn() {
+  padContainer.classList.add('unclickable');
+  setText(statusSpan, "The computer's turn...");
+  setText(heading, `Round ${roundCount} of ${maxRoundCount}`);
+  computerSequence = [];
 
-  setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 1000); // 5
+  computerSequence.push(getRandomItem(['red', 'green', 'blue', 'yellow']));
+  activatePads(computerSequence);
+
+  setTimeout(() => playHumanTurn(roundCount), roundCount * 600 + 500); // 5
 }
 
 /**
@@ -257,7 +267,16 @@ function activatePads(sequence) {
  * 2. Display a status message showing the player how many presses are left in the round
  */
 function playHumanTurn() {
-  // TODO: Write your code here.
+  padContainer.classList.remove('unclickable');
+  playerSequence = [];
+  let remainingPresses = computerSequence.length - playerSequence.length;
+  if (playerSequence.length == 0) {
+    setText(statusSpan, "Player's turn...");
+  } else if (remainingPresses == 1) {
+    setText(statusSpan, `1 press remaining`);
+  } else {
+    setText(statusSpan, `${remainingPresses} presses remaining`);
+  }
 }
 
 /**
@@ -283,7 +302,19 @@ function playHumanTurn() {
  *
  */
 function checkPress(color) {
-  // TODO: Write your code here.
+  playerSequence.push(color);
+  let index = playerSequence.length - 1;
+  let remainingPresses = computerSequence.length - playerSequence.length;
+  if (remainingPresses == 1) {
+    setText(statusSpan, `1 press remaining`);
+  } else {
+    setText(statusSpan, `${remainingPresses} presses remaining`)
+  }
+  if (playerSequence[index] != computerSequence[index]) {
+    resetGame("Wrong seeKwuence!");
+  } else {
+    if (remainingPresses == 0) checkRound();
+  }
 }
 
 /**
@@ -302,7 +333,13 @@ function checkPress(color) {
  */
 
 function checkRound() {
-  // TODO: Write your code here.
+  if (playerSequence.length == maxRoundCount) {
+    resetGame("SeeKwuence complete!");
+  } else {
+    roundCount++;
+    setText(statusSpan, "Ok I see you, Let's kick it up a notch!");
+    setTimeout(playComputerTurn, 1000);
+  }
 }
 
 /**
@@ -315,7 +352,14 @@ function checkRound() {
  * 3. Reset `roundCount` to an empty array
  */
 function resetGame(text) {
-  // TODO: Write your code here.
+  computerSequence = [];
+  playerSequence = [];
+  roundCount = 0;
+  if (text.includes("complete")) {
+    playerWins++;
+  } else {
+    computerWins++;
+  }
 
   // Uncomment the code below:
   // alert(text);
