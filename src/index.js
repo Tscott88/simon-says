@@ -5,7 +5,7 @@
  const startButton = document.querySelector(".js-start-button");
  // TODO: Add the missing query selectors:
  const statusSpan = document.querySelector("js-status");
- const heading = docuement.querySelector("js-heading");
+ const heading = document.querySelector("js-heading");
  const padContainer = document.querySelector("js-pad-container");
 
 /**
